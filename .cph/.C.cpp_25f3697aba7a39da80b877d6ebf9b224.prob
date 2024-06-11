@@ -1,0 +1,1 @@
+{"name":"Local: C","url":"c:\\Users\\Faralha\\Documents\\_Code\\Final Project\\C.cpp","tests":[{"id":1718037409851,"input":"10\n1 2 3 4 5 6 7 8 9 10","output":"Angka Genap:\n2 4 6 8 10\nAngka Ganjil:\n9 7 5 3 1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\Faralha\\Documents\\_Code\\Final Project\\C.cpp","group":"local","local":true}
