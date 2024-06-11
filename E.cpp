@@ -15,7 +15,8 @@ int main()
 {
     int N;
     cin >> N;
-
+    
+    // gausah pake count level, harusnya bisa langsung
     int level = countLevel(N);
 
     int arr[N];
