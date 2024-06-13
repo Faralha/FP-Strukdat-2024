@@ -11,10 +11,7 @@ struct graph
         vertexCount = v;
         edgeCount = 0;
 
-        for (int i = 0; i < vertexCount; i++)
-        {
-            adjList.push_back({}); // inserts V ammount of empty vector
-        }
+        adjList.resize(vertexCount);
     }
 
     void add_edge(long vertex1, long vertex2)
@@ -22,34 +19,6 @@ struct graph
         adjList[vertex1].push_back(vertex2);
         adjList[vertex2].push_back(vertex1);
         edgeCount++;
-    }
-
-    void dfs(vector<long> &result, long start)
-    {
-        vector<bool> visited(vertexCount, false);
-        stack<long> st;
-
-        st.push(start);
-        visited[start] = true;
-        result.push_back(start);
-
-        while (!st.empty())
-        {
-            long temp = st.top();
-            st.pop();
-
-            if (!visited[temp])
-            {
-                result.push_back(temp);
-                visited[temp] = true;
-            }
-
-            for (auto vertex : adjList[temp])
-            {
-                if (!visited[vertex])
-                    st.push(vertex);
-            }
-        }
     }
 
     void bfs(vector<long> &result, long start, long cari)
@@ -103,7 +72,7 @@ int main()
     cin >> pemain >> operan >> operanKali;
 
     graph g;
-    g.init(operan);
+    g.init(pemain);
 
     while (operan > 0)
     {

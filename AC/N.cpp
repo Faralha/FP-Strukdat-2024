@@ -3,6 +3,7 @@ using namespace std;
 
 char getAlphabeticValue(int num)
 {
+    num = num % 26; // Ensure num is within the range 0-25
     return 'A' + num;
 }
 
@@ -334,7 +335,7 @@ public:
                 }
                 cout << endl;
 
-                if (power(trailPower) > powerSum)
+                if (power(trailPower) - powerSum >= 0)
                 {
                     isWin = true;
                     trailPower = power(trailPower) - powerSum;
@@ -368,6 +369,7 @@ void printMain(string region, string trailblazer, int power, string element)
 {
     cout << "*****************************************************************************" << endl;
     cout << "Honkai Star Rail Region " << region << endl;
+    puts(" ");
     cout << "Trailblazer : " << trailblazer << endl;
     cout << "Element : " << element << " - " << power << endl;
     cout << "----------------------------------------------------------------------------" << endl;
@@ -455,7 +457,7 @@ int main()
     bool defeatedAtStage = false;
     string losingStages;
 
-    if (x > bossPower)
+    if (x >= bossPower)
     {
         isWin = true;
     }
