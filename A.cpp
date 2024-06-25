@@ -1,72 +1,114 @@
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <climits>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef pair<int, int> pii;
+struct graph
+{
+    long vertexCount, edgeCount;
+    vector<vector<pair<long, long>>> adjList;
 
-// Modified Dijkstra's algorithm to include potion refill logic
-int minRefillTime(vector<vector<pii>>& graph, int source, int k, int e) {
-    int n = graph.size();
-    vector<int> dist(n, INT_MAX); // Distance represents the minimum time including refills
-    dist[source] = 0;
-    vector<int> potions(n, k); // Track the number of potions left
-    potions[source] = k; // Start with k potions
+    void init(long v)
+    {
+        vertexCount = v;
+        edgeCount = 0;
 
-    priority_queue<pii, vector<pii>, greater<pii>> pq;
-    pq.push({0, source});
-
-    while (!pq.empty()) {
-        int u = pq.top().second;
-        int d = pq.top().first;
-        pq.pop();
-
-        if (d > dist[u]) {
-            continue;
+        for (int i = 0; i < vertexCount; i++)
+        {
+            adjList.push_back({}); // inserts V ammount of empty vector
         }
+    }
 
-        for (auto& neighbor : graph[u]) {
-            int v = neighbor.first;
-            int w = neighbor.second; // Potion usage
+    void add_edge(long vertex1, long vertex2, long weight)
+    {
+        adjList[vertex1].push_back(make_pair(vertex2, weight));
+        edgeCount++;
+    }
 
-            int newDist = dist[u] + (potions[u] >= w ? 0 : (w - potions[u] + k - 1) / k * 3); // Calculate refill time
-            int newPotions = max(0, potions[u] - w) % k; // Update potions left
+    void dfs(vector<long> &result, long start)
+    {
+        vector<bool> visited(vertexCount, false);
+        stack<long> st;
 
-            if (newDist < dist[v]) {
-                dist[v] = newDist;
-                potions[v] = newPotions;
-                pq.push({dist[v], v});
+        st.push(start);
+        visited[start] = true;
+        result.push_back(start);
+
+        while (!st.empty())
+        {
+            long temp = st.top();
+            st.pop();
+
+            if (!visited[temp])
+            {
+                result.push_back(temp);
+                visited[temp] = true;
+            }
+
+            for (auto vertex : adjList[temp])
+            {
+                if (!visited[vertex.first])
+                    st.push(vertex.first);
             }
         }
     }
 
-    // Check if the estimated time is less than the actual minimum time
-    if (dist[n-1] > e) {
-        cout << "muak gweh, butuh heal lagi" << endl;
-    } else {
-        return dist[n-1];
+    void bfs(vector<long> &result, long start)
+    {
+        vector<bool> visited(vertexCount, false);
+        queue<long> q;
+
+        q.push(start);
+        visited[start] = true;
+        result.push_back(start);
+
+        while (!q.empty())
+        {
+            long temp = q.front();
+            q.pop();
+
+            for (auto vertex : adjList[temp])
+            {
+                if (!visited[vertex.first])
+                {
+                    q.push(vertex.first);
+                    visited[vertex.first] = true;
+                    result.push_back(vertex.first);
+                }
+            }
+        }
     }
-}
+};
 
-int main() {
-    int n, m, k, e;
-    cin >> n >> m >> k >> e;
-    vector<vector<pii>> graph(n);
+int main()
+{
+    int N, M, K, E;
+    cin >> N >> M >> K >> E;
 
-    for (int i = 0; i < m; ++i) {
+    graph g;
+    g.init(M);
+
+    for (int i = 0; i < N;i++){
         int a, b, p;
         cin >> a >> b >> p;
-        --a; --b; // Adjusting for 0-based indexing
-        graph[a].push_back({b, p});
-        graph[b].push_back({a, p}); // Assuming undirected graph for bidirectional movement
+
+        g.add_edge(a, b, p);
     }
 
-    int result = minRefillTime(graph, 0, k, e);
-    if (result != -1) {
-        cout << result << endl;
+    vector<long> dfs_result, bfs_result;
+    g.dfs(dfs_result, 4);
+
+    for (auto it : dfs_result)
+    {
+        cout << it << " ";
     }
+    cout << endl;
+
+    g.bfs(bfs_result, 4);
+
+    for (auto it : bfs_result)
+    {
+        cout << it << " ";
+    }
+    cout << endl;
 
     return 0;
 }

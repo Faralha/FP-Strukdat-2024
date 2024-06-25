@@ -6,6 +6,8 @@ struct graph
     long vertexCount, edgeCount;
     vector<vector<long>> adjList;
 
+    unordered_map<long, vector<long>> bfsCache;
+
     void init(long v)
     {
         vertexCount = v;
@@ -28,7 +30,7 @@ struct graph
     {
         for (long i = 1; i < vertexCount; i++)
         {
-            // cout << "Adjacent vertices of vertex " << i << ": ";
+
             for (long j = 0; j < adjList[i].size(); j++)
             {
                 cout << adjList[i][j] << " ";
@@ -42,7 +44,7 @@ struct graph
         vector<bool> visited(vertexCount, false);
         queue<long> q;
 
-        // cout << "START DATATYPE: " << typeid(search).name() << endl;
+
         visited[search] = true;
         q.push(search);
         result.push_back(search);
@@ -52,15 +54,6 @@ struct graph
             long current = q.front();
             q.pop();
 
-            // for(long i = 0; i < adjList[current].size(); i++){
-            //     long vertex = adjList[current][i];
-            //     if(!visited[vertex]){
-            //         cout << vertex << " ";
-            //         visited[vertex] = true;
-            //         q.push(vertex);
-            //         result.push_back(vertex);
-            //     }
-            // }
 
             for (long i = 0; i < adjList[current].size(); i++)
             {
@@ -75,12 +68,25 @@ struct graph
             }
         }
     }
+
+    void cachedBfs(long search, vector<long>& result)
+    {
+        if(bfsCache.find(search) != bfsCache.end()){
+            result = bfsCache[search];
+            return;
+        }
+
+        bfs(search, result);
+        bfsCache[search] = result;
+    }
+
+    
 };
 
 long cheapestPath(vector<long> kota, vector<long> price){
     long min = LONG_MAX;
     for(long i = 0; i < kota.size(); i++){
-        // cout << "PRICE FOR " << kota[i] << " : " << price[kota[i]-1] << endl;
+
         if(price[kota[i]-1] < min)
             min = price[kota[i]-1];
     }
@@ -119,8 +125,6 @@ int main()
 
 
 
-    // for(auto i : price)
-    //     cout << i << " ";
 
 
 
@@ -136,11 +140,9 @@ int main()
         g.addEdge(a, b);
     }
 
-    // g.prlongGraph();
 
     long lastKota = kotaAwal;
 
-    // cout << "PHASE 2" << endl;
 
     long T;
     cin >> T;
@@ -151,32 +153,32 @@ int main()
 
         if (a == 1)
         {
-            // Biaya portal kota K berubah jadi X
+  
             cin >> b >> c;
             price[b-1] = c;
-            // cout << "PRICE UPDATED FOR " << b << " TO " << c << endl;
+
         }
 
 
         else if (a == 2)
         {
-            // cout << "TRAVELING" << endl;
+
             // Indra ingin pergi ke kota K dari kota terakhir yang dia kunjungi.
             cin >> b;
 
             long oldPrice = 0;
             long newPrice = 0;
 
-            // cout << "LAST CITY: " << kotaStack.top() << ", NEW CITY: " << b << endl;
+
 
             long kotaOld = lastKota;
-            // cout << kotaOld << " " << endl;
+
             lastKota = b;
             long kotaNew = lastKota;
 
             vector<long> result, result2;
-            g.bfs(kotaOld, result);
-            g.bfs(kotaNew, result2);
+            g.cachedBfs(kotaOld, result);
+            g.cachedBfs(kotaNew, result2);
 
             if(checkSameMembers(result, result2)){
                 oldPrice = 0;
@@ -187,28 +189,17 @@ int main()
             }
 
 
-            // cout << "BFS FOR " << kotaOld << " : ";
-            // for(auto i : result)
-            //     cout << i << " ";
-            // puts("");
-
-            // cout << "BFS FOR " << kotaNew << " : ";
-            // for (auto i : result2)
-            //     cout << i << " ";
-            // puts("");
 
 
         
             sumPrice += (newPrice + oldPrice); 
 
-            // cout << "TRAVEL " << kotaOld << " TO " << kotaNew << " : " << newPrice << " + " << oldPrice << endl;
         }
     }
 
     cout << sumPrice << endl;
 
-    // for (auto i : price)
-    //     cout << i << " ";
+
 
     return 0;
 }
